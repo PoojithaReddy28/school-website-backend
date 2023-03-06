@@ -16,6 +16,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const db = require("./models");
+const Role = db.role;
+
 db.sequelize
   .sync()
   .then(() => {
@@ -31,7 +33,40 @@ db.sequelize
   })
   .then(() => {
     console.log("Drop and re-sync db.");
+    initial();
   });
+
+function initial() {
+  Role.create({
+    id: 1,
+    name: "user",
+  });
+
+  Role.create({
+    id: 2,
+    name: "author",
+  });
+
+  Role.create({
+    id: 3,
+    name: "editor",
+  });
+
+  Role.create({
+    id: 4,
+    name: "supervisor",
+  });
+
+  Role.create({
+    id: 5,
+    name: "principal",
+  });
+
+  Role.create({
+    id: 6,
+    name: "admin",
+  });
+}
 
 // simple route
 app.get("/", (req, res) => {

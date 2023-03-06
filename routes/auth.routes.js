@@ -11,9 +11,10 @@ module.exports = function (app) {
   });
 
   app.post(
-    "/signup"[
+    "/signup",
+    [
       (verifySignUp.checkDuplicateUsernameOrEmail,
-      verifySignUp.checkRolesExisted)
+      verifySignUp.checkRolesExisted),
     ],
     controller.signup
   );

@@ -1,4 +1,4 @@
-const { authJwt } = require("../middleware");
+const authJwt = require("../middleware/authJwt");
 const controller = require("../controllers/user.controller");
 
 module.exports = function (app) {
@@ -28,7 +28,7 @@ module.exports = function (app) {
 
   app.get(
     "/principalpanel",
-    [authJwt.verifyToken, authJwt.isPrincipa],
+    [authJwt.verifyToken, authJwt.isPrincipal],
     controller.principalBoard
   );
 

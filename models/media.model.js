@@ -12,5 +12,6 @@ module.exports = (sequelize, Sequelize) => {
       type: DataTypes.BLOB("long"),
     },
   });
+
+  return Media;
 };
-return Media;

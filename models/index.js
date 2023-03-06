@@ -19,10 +19,17 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.articles = require("./article.model.js")(sequelize, Sequelize);
+db.article = require("./article.model.js")(sequelize, Sequelize);
 db.user = require("../models/user.model")(sequelize, Sequelize);
 db.role = require("../models/role.model")(sequelize, Sequelize);
 db.media = require("./media.model")(sequelize, Sequelize);
+db.tag = require("./tag.model")(sequelize, Sequelize);
+
+db.user.hasMany(db.article, { as: "articles" });
+db.article.belongsTo(db.user, {
+  foreignKey: "user_id",
+  as: "user",
+});
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
@@ -30,10 +37,22 @@ db.role.belongsToMany(db.user, {
   otherKey: "userId",
 });
 
-db.user.belongToMany(db.role, {
+db.user.belongsToMany(db.role, {
   through: "user_roles",
   foreignKey: "userId",
   otherKey: "roleId",
+});
+
+db.tag.belongsToMany(db.article, {
+  through: "article_tag",
+  as: "articles",
+  foreignKey: "tag_id",
+});
+
+db.article.belongsToMany(db.tag, {
+  through: "article_tag",
+  as: "tags",
+  foreignKey: "article_id",
 });
 
 db.ROLES = ["author", "editor", "superrvisor", "principal", "admin"];

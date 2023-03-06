@@ -2,19 +2,32 @@ const db = require("../models");
 const ROLES = db.ROLES;
 const User = db.user;
 
-checkDuplicateUserEmail = (req, res, next) => {
+checkDuplicateUsernameOrEmail = (req, res, next) => {
   User.findOne({
     where: {
-      email: req.body.email,
+      username: req.body.username,
     },
   }).then((user) => {
     if (user) {
       res.status(400).send({
-        message: "Failed! Emails is already in use!",
+        message: "Failed! Username is already in use!",
       });
       return;
     }
-    next();
+
+    User.findOne({
+      where: {
+        email: req.body.email,
+      },
+    }).then((user) => {
+      if (user) {
+        res.status(400).send({
+          message: "Failed! Emails is already in use!",
+        });
+        return;
+      }
+      next();
+    });
   });
 };
 
@@ -33,7 +46,7 @@ checkRolesExisted = (req, res, next) => {
 };
 
 const verifySignup = {
-  checkDuplicateUserEmail: checkDuplicateUserEmail,
+  checkDuplicateUsernameOrEmail: checkDuplicateUsernameOrEmail,
   checkRolesExisted: checkRolesExisted,
 };
 

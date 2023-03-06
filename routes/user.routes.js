@@ -10,30 +10,30 @@ module.exports = function (app) {
     next();
   });
 
-  app.get("/api/test/all", controller.allAccess);
+  app.get("/public", controller.allAccess);
 
-  app.get("/api/test/user", [authJwt.verifyToken], controller.userBoard);
+  app.get("/userpanel", [authJwt.verifyToken], controller.userBoard);
 
   app.get(
-    "/api/test/editor",
+    "/editorpanel",
     [authJwt.verifyToken, authJwt.isEditor],
     controller.editorBoard
   );
 
   app.get(
-    "/api/test/supervisor",
+    "/supervisorpanel",
     [authJwt.verifyToken, authJwt.isSupervisor],
     controller.supervisorBoard
   );
 
   app.get(
-    "/api/test/principal",
+    "/principalpanel",
     [authJwt.verifyToken, authJwt.isPrincipa],
     controller.principalBoard
   );
 
   app.get(
-    "/api/test/admin",
+    "/adminpanel",
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.adminBoard
   );

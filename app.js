@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 
 const app = express();
 
@@ -10,10 +11,10 @@ var corsOptions = {
 app.use(cors(corsOptions));
 
 // parse requests of content-type - application/json
-app.use(express.json());
+app.use(bodyParser.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const db = require("./models");
 const Role = db.role;
@@ -39,31 +40,26 @@ db.sequelize
 function initial() {
   Role.create({
     id: 1,
-    name: "user",
-  });
-
-  Role.create({
-    id: 2,
     name: "author",
   });
 
   Role.create({
-    id: 3,
+    id: 2,
     name: "editor",
   });
 
   Role.create({
-    id: 4,
+    id: 3,
     name: "supervisor",
   });
 
   Role.create({
-    id: 5,
+    id: 4,
     name: "principal",
   });
 
   Role.create({
-    id: 6,
+    id: 5,
     name: "admin",
   });
 }

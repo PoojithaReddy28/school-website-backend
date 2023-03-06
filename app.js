@@ -38,6 +38,8 @@ app.get("/", (req, res) => {
   res.json({ message: "Project Backend." });
 });
 
+require("./controllers/article.controller")(app);
+
 // set port, listen for requests
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

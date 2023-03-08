@@ -4,7 +4,7 @@ const db = require("../models");
 const User = db.user;
 
 verifyToken = (req, res, next) => {
-  let token = req.headers["x-access-token"];
+  let token = req.session.token;
 
   if (!token) {
     return res.status(403).send({
@@ -23,157 +23,128 @@ verifyToken = (req, res, next) => {
   });
 };
 
-isAdmin = (req, res, next) => {
-  User.findByPk(req.userId).then((user) => {
-    user.getRoles().then((roles) => {
-      for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "admin") {
-          next();
-          return;
-        }
+isAdmin = async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.userId);
+    const roles = await user.getRoles();
+
+    for (let i = 0; i < roles.length; i++) {
+      if (roles[i].name === "admin") {
+        return next();
       }
-      res.status(403).send({
-        message: "Require Admin Role!",
-      });
-      return;
+    }
+
+    return res.status(403).send({
+      message: "Require Admin Role!",
     });
-  });
+  } catch (error) {
+    return res.status(500).send({
+      message: "Unable to validate User role!",
+    });
+  }
 };
 
-isPrincipal = (req, res, next) => {
-  User.findByPk(req.userId).then((user) => {
-    user.getRoles().then((roles) => {
-      for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "principal") {
-          next();
-          return;
-        }
+isPrincipal = async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.userId);
+    const roles = await user.getRoles();
+
+    for (let i = 0; i < roles.length; i++) {
+      if (roles[i].name === "principal") {
+        return next();
       }
-      res.status(403).send({
-        message: "Require Principal Role",
-      });
-      return;
+    }
+
+    return res.status(403).send({
+      message: "Require Principal Role",
     });
-  });
+  } catch (error) {
+    return res.status(500).send({
+      message: "Unable to validate Principal role!",
+    });
+  }
 };
 
-isSupervisor = (req, res, next) => {
-  User.findByPk(req.userId).then((user) => {
-    user.getRoles().then((roles) => {
-      for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "supervisor") {
-          next();
-          return;
-        }
+isSupervisor = async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.userId);
+    const roles = await user.getRoles();
+
+    for (let i = 0; i < roles.length; i++) {
+      if (roles[i].name === "supervisor") {
+        return next();
       }
-      res.status(403).send({
-        message: "Require Supervisor Role",
-      });
-      return;
+    }
+
+    return res.status(403).send({
+      message: "Require Supervisor Role!",
     });
-  });
+  } catch (error) {
+    return res.status(500).send({
+      message: "Unable to validate Supervisor role!",
+    });
+  }
 };
 
-isEditor = (req, res, next) => {
-  User.findByPk(req.userId).then((user) => {
-    user.getRoles().then((roles) => {
-      for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "editor") {
-          next();
-          return;
-        }
+isEditor = async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.userId);
+    const roles = await user.getRoles();
+
+    for (let i = 0; i < roles.length; i++) {
+      if (roles[i].name === "editor") {
+        return next();
       }
-      res.status(403).send({
-        message: "Require Editor Role",
-      });
-      return;
+    }
+
+    return res.status(403).send({
+      message: "Require Editor Role",
     });
-  });
+  } catch (error) {
+    return res.status(500).send({
+      message: "Unable to validate Supervisor role!",
+    });
+  }
 };
 
-isAdminOrPrincipalOrSupervisorOrEditor = (req, res, next) => {
-  User.findByPk(req.userId).then((user) => {
-    user.getRoles().then((roles) => {
-      for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "editor") {
-          next();
-          return;
-        }
+isAdminOrPrincipalOrSupervisorOrEditor = async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.userId);
+    const roles = await user.getRoles();
 
-        if (roles[i].name === "supervisor") {
-          next();
-          return;
-        }
-
-        if (roles[i].name === "principal") {
-          next();
-          return;
-        }
-        if (roles[i].name === "admin") {
-          next();
-          return;
-        }
+    for (let i = 0; i < roles.length; i++) {
+      if (roles[i].name === "editor") {
+        return next();
       }
-      res.status(403).send({
-        message: "Require Editor or Supervisor or Principal or Admin Role",
-      });
-    });
-  });
-};
 
-isAdminOrPrincipalOrSupervisor = (req, res, next) => {
-  User.findByPk(req.userId).then((user) => {
-    user.getRoles().then((roles) => {
-      for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "supervisor") {
-          next();
-          return;
-        }
-        if (roles[i].name === "principal") {
-          next();
-          return;
-        }
-        if (roles[i].name === "admin") {
-          next();
-          return;
-        }
+      if (roles[i].name === "supervisor") {
+        return next();
       }
-      res.status(403).send({
-        message: "Require Supervisor or Principal or Admin Role",
-      });
-    });
-  });
-};
 
-isAdminOrPrincipal = (req, res, next) => {
-  User.findByPk(req.userId).then((user) => {
-    user.getRoles().then((roles) => {
-      for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "principal") {
-          next();
-          return;
-        }
-        if (roles[i].name === "admin") {
-          next();
-          return;
-        }
+      if (roles[i].name === "principal") {
+        return next();
       }
-      res.status(403).send({
-        message: "Require Principal or Admin Role",
-      });
+      if (roles[i].name === "admin") {
+        return next();
+      }
+    }
+    return res.status(403).send({
+      message: "Require Editor or Supervisor or Principal or Admin Role",
     });
-  });
+  } catch (error) {
+    return res.status(500).send({
+      message:
+        "Unable to validate Editor or Supervisor or Principal or Admin role!",
+    });
+  }
 };
 
 const authJWT = {
-  verifyToken: verifyToken,
-  isAdmin: isAdmin,
-  isPrincipal: isPrincipal,
-  isSupervisor: isSupervisor,
-  isEditor: isEditor,
-  isAdminOrPrincipalOrSupervisorOrEditor:
-    isAdminOrPrincipalOrSupervisorOrEditor,
-  isAdminOrPrincipalOrSupervisor: isAdminOrPrincipalOrSupervisor,
-  isAdminOrPrincipal: isAdminOrPrincipal,
+  verifyToken,
+  isAdmin,
+  isPrincipal,
+  isSupervisor,
+  isEditor,
+  isAdminOrPrincipalOrSupervisorOrEditor,
 };
 module.exports = authJWT;

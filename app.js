@@ -1,32 +1,27 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const cookieSession = require("cookie-session");
 
 const app = express();
 
-var corsOptions = {
-  origin: "http://localhost:5000",
-};
-
-app.use(cors(corsOptions));
+app.use(cors());
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+  cookieSession({
+    name: "project-session",
+    secret: "COOKIE_SECRET",
+    httpOnly: true,
+  })
+);
 
 const db = require("./models");
 const Role = db.role;
-
-db.sequelize
-  .sync()
-  .then(() => {
-    console.log("Synced db.");
-  })
-  .catch((err) => {
-    console.log("Failed to sync db: " + err.message);
-  });
 
 db.sequelize
   .sync({
@@ -35,12 +30,15 @@ db.sequelize
   .then(() => {
     console.log("Drop and re-sync db.");
     initial();
+  })
+  .catch((err) => {
+    console.log("Failed to sync db: " + err.message);
   });
 
 function initial() {
   Role.create({
     id: 1,
-    name: "author",
+    name: "user",
   });
 
   Role.create({
@@ -75,7 +73,7 @@ require("./routes/user.routes")(app);
 require("./routes/media.routes")(app);
 
 // set port, listen for requests
-const PORT = process.env.PORT || 6000;
+const PORT = process.env.PORT || 7000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });

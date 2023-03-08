@@ -45,16 +45,16 @@ db.user.belongsToMany(db.role, {
 
 db.tag.belongsToMany(db.article, {
   through: "article_tag",
-  as: "articles",
   foreignKey: "tag_id",
+  otherKey: "articleId",
 });
 
 db.article.belongsToMany(db.tag, {
   through: "article_tag",
-  as: "tags",
   foreignKey: "article_id",
+  otherKey: "tagId",
 });
 
-db.ROLES = ["author", "editor", "superrvisor", "principal", "admin"];
+db.ROLES = ["user", "editor", "supervisor", "principal", "admin"];
 
 module.exports = db;

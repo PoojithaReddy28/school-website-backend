@@ -4,7 +4,7 @@ module.exports = (app) => {
   var router = require("express").Router();
 
   // Create a new Article
-  router.post("/new", articles.create);
+  router.post("/", articles.create);
 
   // Retrieve all Article
   router.get("/", articles.findAll);
@@ -21,7 +21,7 @@ module.exports = (app) => {
   // Delete a Article with id
   router.delete("/:id", articles.delete);
 
-  // Delete all Tutorials
+  // Delete all Articles
   router.delete("/", articles.deleteAll);
 
   app.use("/api/articles", router);
